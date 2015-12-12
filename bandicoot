@@ -1,0 +1,85 @@
+#!/bin/bash
+#set -ex
+
+readonly -a ARGS=("$@")
+readonly ARGS_C=$#
+
+function create_tunnel {
+	local userhost=$1
+	local rport=$2
+	local lport=$3
+
+	ssh -M -S bandicoot_socket -fnNT $userhost -p $rport -D localhost:$lport
+	if [ $? -eq 0 ] ; then
+		echo Created SSH tunnel for $userhost
+	else
+		echo Couldn\'t create SSH connection.
+	fi
+}
+
+function kill_tunnel {
+	local userhost=$1
+	ssh -S bandicoot_socket -O exit "$userhost" &> /dev/null
+}
+
+function query_tunnel {
+	local userhost=$1
+	ssh -S bandicoot_socket -O check "$userhost" &> /dev/null
+}
+
+function test_tunnel {
+	local lport=$1
+	nc -z -G 1 -x localhost:"$lport" 127.0.0.1 22 &> /dev/null
+}
+
+function main() {
+
+	if [ $ARGS_C -le 0 ] ; then
+		echo Oops. You forgot to specify user@host!
+		exit
+	fi
+
+	if [ $ARGS_C -gt 3 ] ; then
+		echo Woh. Too many parameters, just user@host remoteport localport at most please!
+		exit
+	fi
+
+	local userhost=${ARGS[0]}
+
+	# usage for stopping tunnel: bandicoot user@host stop
+	if [ "${ARGS[1]}" = "stop" ] ; then
+		echo Stopping "$userhost".
+		kill_tunnel $userhost
+		exit
+	fi
+
+	# Use default remote & local ports if not specified
+	if [ -z ${ARGS[1]} ] ; then
+		rport=22
+	else
+		rport=${ARGS[1]}
+	fi
+
+	if [ -z ${ARGS[2]} ] ; then
+		lport=2222
+	else
+		lport=${ARGS[2]}
+	fi
+
+	# check for an existing tunnel, kill if borked
+	query_tunnel $userhost
+	if [ $? -eq 0 ] ; then
+		echo There\'s already a tunnel running for $userhost
+		test_tunnel $lport
+		if [ $? -ne 0 ] ; then
+			echo The tunnel can\'t access the web. Attempting restart.
+			kill_tunnel $userhost
+		else
+			exit
+		fi
+	fi
+
+	# create the tunnel
+	create_tunnel $userhost $rport $lport
+}
+main
