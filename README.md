@@ -10,4 +10,6 @@ Use bandicoot on Linux inside a simple watch statement to automatically check yo
 
 To completely automate this reconnection process use an passphraseless SSH key. Your broken SSH tunnel will be automatically reconnected after just a few seconds.
 
-If you're using OS X then you'll need to use an extra script to monitor the tunnel as 'watch' isn't available.
+If you're using OS X then you'll need to use an extra script to monitor the tunnel as 'watch' isn't available. I've included a script called 'watch\_the\_bandicoot' as an example.
+
+Why not choose a ready made GUI SSH tunnel manager? This one is so simple, and open source, so you can see that there's no nefarious code stealing your SSH credentials.
