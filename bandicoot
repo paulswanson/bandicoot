@@ -72,7 +72,7 @@ function main() {
 		echo There\'s already a tunnel running for $userhost
 		test_tunnel $lport
 		if [ $? -ne 0 ] ; then
-			echo The tunnel can\'t access the web. Attempting restart.
+			echo Tunnel looks dead. Attempting restart.
 			kill_tunnel $userhost
 		else
 			exit
