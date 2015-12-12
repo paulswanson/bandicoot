@@ -20,6 +20,10 @@ or
 
 The argument order is: user@host remoteport localport
 
+To stop the tunnel simply use the following:
+
+`bandicoot user@host stop`
+
 If you're using OS X then you'll need to use an extra script to monitor the tunnel as 'watch' isn't available. I've included a script called 'watch\_the\_bandicoot' as an example.
 
 Why not choose a ready made GUI SSH tunnel manager? This one is so simple, and open source, so you can see that there's no nefarious code stealing your SSH credentials.
