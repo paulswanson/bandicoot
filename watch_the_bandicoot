@@ -1,0 +1,9 @@
+#!/bin/bash
+# Sample watch script for OS X
+
+while :; 
+	do
+	clear
+  	./bandicoot user@remotehost
+	sleep 5
+done
