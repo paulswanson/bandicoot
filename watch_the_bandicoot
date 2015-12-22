@@ -1,9 +1,11 @@
 #!/bin/bash
-# Sample watch script for OS X
+# Sample script for watching and maintaining an SSH tunnel with Bandicoot
+
+readonly -a ARGS=("$@")
 
 while :; 
 	do
 	clear
-  	./bandicoot user@remotehost
+  	./bandicoot $ARGS
 	sleep 5
 done
