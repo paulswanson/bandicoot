@@ -29,7 +29,7 @@ function query_tunnel {
 
 function test_tunnel {
 	local lport=$1
-	nc -z -G 1 -x localhost:"$lport" 127.0.0.1 22 &> /dev/null
+	nc -z -w 1 -x localhost:"$lport" 127.0.0.1 22 &> /dev/null
 }
 
 function main() {
@@ -69,7 +69,7 @@ function main() {
 	# check for an existing tunnel, kill if borked
 	query_tunnel $userhost
 	if [ $? -eq 0 ] ; then
-		echo There\'s already a tunnel running for $userhost
+		echo Tunnel $userhost is alive and healthy.
 		test_tunnel $lport
 		if [ $? -ne 0 ] ; then
 			echo Tunnel looks dead. Attempting restart.
