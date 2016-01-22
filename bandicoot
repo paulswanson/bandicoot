@@ -3,13 +3,14 @@
 
 readonly -a ARGS=("$@")
 readonly ARGS_C=$#
+readonly BANDICOOT_SOCKET=bandicoot_socket
 
 function create_tunnel {
 	local userhost=$1
 	local rport=$2
 	local lport=$3
 
-	ssh -M -S bandicoot_socket -fnNT $userhost -p $rport -D localhost:$lport
+	ssh -M -S $BANDICOOT_SOCKET -fnNT $userhost -p $rport -D localhost:$lport
 	if [ $? -eq 0 ] ; then
 		echo Created SSH tunnel for $userhost
 	else
@@ -19,12 +20,12 @@ function create_tunnel {
 
 function kill_tunnel {
 	local userhost=$1
-	ssh -S bandicoot_socket -O exit "$userhost" &> /dev/null
+	ssh -S $BANDICOOT_SOCKET -O exit "$userhost" &> /dev/null
 }
 
 function query_tunnel {
 	local userhost=$1
-	ssh -S bandicoot_socket -O check "$userhost" &> /dev/null
+	ssh -S $BANDICOOT_SOCKET -O check "$userhost" &> /dev/null
 }
 
 function test_tunnel {
@@ -77,6 +78,11 @@ function main() {
 		else
 			exit
 		fi
+	fi
+
+	# The socket shouldn't exist at this point
+	if [ -f "$BANDICOOT_SOCKET" ] ; then
+		rm -f $BANDICOOT_SOCKET
 	fi
 
 	# create the tunnel

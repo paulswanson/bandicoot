@@ -3,6 +3,11 @@
 
 readonly -a ARGS=("$@")
 
+# Workaround corrupted socket bug ... need a better solution
+if [ -f bandicoot_socket ] ; then
+	rm -f bandicoot_socket
+fi
+
 while :; 
 	do
 	clear
